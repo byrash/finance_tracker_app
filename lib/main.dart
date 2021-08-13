@@ -88,8 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
     var appBarComponent = AppBar(
       title: const Text("Finance Tracker"),
       actions: [
@@ -102,9 +102,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     final txListWidget = Container(
-        height: (MediaQuery.of(context).size.height -
+        height: (mediaQuery.size.height -
                 appBarComponent.preferredSize.height -
-                MediaQuery.of(context).padding.top) *
+                mediaQuery.padding.top) *
             0.7,
         child: TransactionList(_transactions, _deleteTransaction));
 
@@ -143,9 +143,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Card(
                   color: Theme.of(context).primaryColorLight,
                   child: Container(
-                      height: (MediaQuery.of(context).size.height -
+                      height: (mediaQuery.size.height -
                               appBarComponent.preferredSize.height -
-                              MediaQuery.of(context).padding.top) *
+                              mediaQuery.padding.top) *
                           0.3,
                       child: Chart(_recentTransactions)),
                   elevation: 5,
@@ -159,9 +159,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Card(
                         color: Theme.of(context).primaryColorLight,
                         child: Container(
-                            height: (MediaQuery.of(context).size.height -
+                            height: (mediaQuery.size.height -
                                     appBarComponent.preferredSize.height -
-                                    MediaQuery.of(context).padding.top) *
+                                    mediaQuery.padding.top) *
                                 0.7,
                             child: Chart(_recentTransactions)),
                         elevation: 5,
