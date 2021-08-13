@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -55,12 +58,17 @@ class _NewTransactionState extends State<NewTransaction> {
                   ],
                 ),
               ),
-              ElevatedButton(
-                  style: ButtonStyle(
-                      textStyle: MaterialStateProperty.all(TextStyle(
-                          color: Theme.of(context).primaryColorLight))),
-                  onPressed: _onSubmit,
-                  child: Text("Add Transaction")),
+              Platform.isIOS
+                  ? CupertinoButton(
+                      color: Theme.of(context).primaryColor,
+                      onPressed: _onSubmit,
+                      child: Text("Add Transaction"))
+                  : ElevatedButton(
+                      style: ButtonStyle(
+                          textStyle: MaterialStateProperty.all(TextStyle(
+                              color: Theme.of(context).primaryColorLight))),
+                      onPressed: _onSubmit,
+                      child: Text("Add Transaction")),
             ],
           ),
         ),
