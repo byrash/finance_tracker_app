@@ -6,7 +6,13 @@ import 'package:real_app/widgets/transaction_list.dart';
 
 import 'models/transaction.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  //DO NOT Allow Landscape mode
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -42,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Transaction(id: "t1", title: "Shoes", amount: 69.99, date: DateTime.now()),
     // Transaction(id: "t2", title: "Milk", amount: 9.79, date: DateTime.now()),
   ];
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
     return _transactions
@@ -81,6 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     var appBarComponent = AppBar(
       title: const Text("Finance Tracker"),
       actions: [
@@ -91,6 +100,14 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.add))
       ],
     );
+
+    final txListWidget = Container(
+        height: (MediaQuery.of(context).size.height -
+                appBarComponent.preferredSize.height -
+                MediaQuery.of(context).padding.top) *
+            0.7,
+        child: TransactionList(_transactions, _deleteTransaction));
+
     return Scaffold(
       appBar: appBarComponent,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -105,25 +122,52 @@ class _MyHomePageState extends State<MyHomePage> {
           // mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Theme.of(context).primaryColorLight,
-                child: Container(
-                    height: (MediaQuery.of(context).size.height -
-                            appBarComponent.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.3,
-                    child: Chart(_recentTransactions)),
-                elevation: 5,
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Switch Chart"),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (value) {
+                      setState(() {
+                        _showChart = value;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ),
-            Container(
-                height: (MediaQuery.of(context).size.height -
-                        appBarComponent.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
-                    0.7,
-                child: TransactionList(_transactions, _deleteTransaction))
+            if (!isLandscape)
+              Container(
+                width: double.infinity,
+                child: Card(
+                  color: Theme.of(context).primaryColorLight,
+                  child: Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBarComponent.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.3,
+                      child: Chart(_recentTransactions)),
+                  elevation: 5,
+                ),
+              ),
+            if (!isLandscape) txListWidget,
+            if (isLandscape)
+              _showChart
+                  ? Container(
+                      width: double.infinity,
+                      child: Card(
+                        color: Theme.of(context).primaryColorLight,
+                        child: Container(
+                            height: (MediaQuery.of(context).size.height -
+                                    appBarComponent.preferredSize.height -
+                                    MediaQuery.of(context).padding.top) *
+                                0.7,
+                            child: Chart(_recentTransactions)),
+                        elevation: 5,
+                      ),
+                    )
+                  : txListWidget
           ],
         ),
       ),
